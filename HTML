@@ -16,8 +16,7 @@
         input.value = '';
       }
     });
-
-    socket.on('chat message', (msg) => {
+socket.on('chat message', (msg) => {
       const item = document.createElement('li');
       item.textContent = msg;
       output.appendChild(item);
@@ -31,3 +30,23 @@
   </form>
 </body>
 </html>
+<input id="fileupload" type="file" name="files[]" multiple>
+<div id="progress" class="progress"></div>
+
+$(document).ready(function () {
+    $('#fileupload').fileupload({
+        url: 'upload.php', // アップロード先のPHPファイル
+        dataType: 'json',
+        done: function (e, data) {
+            // アップロード成功時の処理
+            $.each(data.result.files, function (index, file) {
+                // アップロードされたファイルの情報を表示する
+                $('#uploaded-files').append('<p>' + file.name + '</p>');
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css('width', progress + '%');
+        }
+    });
+});
