@@ -22,3 +22,21 @@ function registerUser($username, $password) {
 
     return true;
 }
+// upload.php
+<?php
+// アップロードされたファイルを一時ディレクトリに保存
+$target_dir = "uploads/";
+$target_file = $target_dir . basename($_FILES["files"]["name"][0]);
+move_uploaded_file($_FILES["files"]["tmp_name"][0], $target_file);
+
+// データベースに保存（例：MySQL）
+$pdo = new PDO('mysql:host=localhost;dbname=your_db', 'user', 'password');
+$stmt = $pdo->prepare('INSERT INTO files (name, path) VALUES (:name, :path)');
+$stmt->bindValue(':name', basename($_FILES["files"]["name"][0]));
+$stmt->bindValue(':path', $target_file);
+$stmt->execute();
+
+// JSON形式で結果を返す
+echo json_encode(array('files' => array(
+    array('name' => basename($_FILES["files"]["name"][0]))
+)));
