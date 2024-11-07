@@ -1,0 +1,24 @@
+// ユーザー登録処理
+function registerUser($username, $password) {
+    // データベース接続
+    $pdo = new PDO('mysql:host=localhost;dbname=your_db', 'user', 'password');
+
+    // 重複チェック
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE username = :username');
+    $stmt->bindValue(':username', $username);
+    $stmt->execute();
+    if ($stmt->fetch()) {
+        return false; // 重複している場合
+    }
+
+    // パスワードをハッシュ化して保存
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // ユーザー情報を登録
+    $stmt = $pdo->prepare('INSERT INTO users (username, password) VALUES (:username, :password)');
+    $stmt->bindValue(':username', $username);
+    $stmt->bindValue(':password', $hashedPassword);
+    $stmt->execute();
+
+    return true;
+}
