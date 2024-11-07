@@ -50,3 +50,12 @@ $(document).ready(function () {
         }
     });
 });
+<a href="tel:+81312345678">こちらをクリックして電話をかける</a>
+<button onclick="makeCall('+81312345678')">電話をかける</button>
+
+<script>
+function makeCall(number) {
+  window.location.href = 'tel:' + number;
+}
+</script>
+
